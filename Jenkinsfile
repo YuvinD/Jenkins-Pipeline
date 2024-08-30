@@ -1,67 +1,73 @@
 pipeline {
     agent any
-    tools {
-        maven 'Maven 3.9.9'
-        jdk 'JDK 17'
-    }
+
     stages {
         stage('Build') {
             steps {
                 script {
-                    echo 'Using Maven for build stage'
+                    echo 'Building the code using Maven...'
                 }
             }
         }
         stage('Unit and Integration Tests') {
             steps {
                 script {
-                    echo 'Using Maven for unit and integration tests'
+                    echo 'Running unit tests with JUnit and integration tests with TestNG...'
                 }
             }
         }
         stage('Code Analysis') {
             steps {
                 script {
-                    echo 'Using SonarQube for code analysis'
+                    echo 'Analyzing code with SonarQube...'
                 }
             }
         }
         stage('Security Scan') {
             steps {
                 script {
-                    echo 'Using OWASP Dependency-Check for security scan'
+                    echo 'Performing security scan with OWASP ZAP...'
                 }
             }
         }
         stage('Deploy to Staging') {
             steps {
                 script {
-                    echo 'Deploying to staging server'
+                    echo 'Deploying application to AWS EC2 instance...'
                 }
             }
         }
         stage('Integration Tests on Staging') {
             steps {
                 script {
-                    echo 'Running integration tests on staging'
+                    echo 'Running integration tests on staging environment...'
                 }
             }
         }
         stage('Deploy to Production') {
             steps {
                 script {
-                    echo 'Deploying to production server'
+                    echo 'Deploying application to production server on AWS EC2 instance...'
                 }
             }
         }
     }
+
     post {
         always {
-            mail(
-                to: 'yuvindeakin@gmail.com',
-                subject: "Build ${currentBuild.fullDisplayName}",
-                body: "Build ${currentBuild.fullDisplayName} completed with status: ${currentBuild.currentResult}. See ${env.BUILD_URL} for details."
-            )
+            script {
+                echo 'Sending notification email to yuvindeakin@gmail.com...'
+            }
+        }
+        success {
+            script {
+                echo 'Build succeeded!'
+            }
+        }
+        failure {
+            script {
+                echo 'Build failed!'
+            }
         }
     }
 }
