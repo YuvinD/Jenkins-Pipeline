@@ -1,18 +1,20 @@
 pipeline {
     agent any
-
     stages {
         stage('Build') {
             steps {
                 script {
                     echo 'Building the code using Maven...'
+       
                 }
             }
         }
         stage('Unit and Integration Tests') {
             steps {
                 script {
-                    echo 'Running unit tests with JUnit and integration tests with TestNG...'
+                    echo 'Running unit tests using JUnit...'
+                    echo 'Running integration tests using TestNG...'
+      
                 }
             }
         }
@@ -20,6 +22,7 @@ pipeline {
             steps {
                 script {
                     echo 'Analyzing code with SonarQube...'
+          
                 }
             }
         }
@@ -27,13 +30,15 @@ pipeline {
             steps {
                 script {
                     echo 'Performing security scan with OWASP ZAP...'
+        
                 }
             }
         }
         stage('Deploy to Staging') {
             steps {
                 script {
-                    echo 'Deploying application to AWS EC2 instance...'
+                    echo 'Deploying application to AWS EC2 staging server...'
+               
                 }
             }
         }
@@ -41,33 +46,35 @@ pipeline {
             steps {
                 script {
                     echo 'Running integration tests on staging environment...'
+                
                 }
             }
         }
         stage('Deploy to Production') {
             steps {
                 script {
-                    echo 'Deploying application to production server on AWS EC2 instance...'
+                    echo 'Deploying application to AWS EC2 production server...'
+
                 }
             }
         }
     }
-
     post {
-        always {
-            script {
-                echo 'Sending notification email to yuvindeakin@gmail.com...'
-            }
-        }
         success {
-            script {
-                echo 'Build succeeded!'
-            }
+            emailext(
+                subject: 'Pipeline Success',
+                body: 'Pipeline ran successfully.',
+                to: 'yuvindeakin@gmail.com',
+                attachLog: true
+            )
         }
         failure {
-            script {
-                echo 'Build failed!'
-            }
+            emailext(
+                subject: 'Pipeline Failure',
+                body: 'Pipeline failed.',
+                to: 'yuvindeakin@gmail.com',
+                attachLog: true
+            )
         }
     }
 }
