@@ -5,7 +5,6 @@ pipeline {
             steps {
                 script {
                     echo 'Building the code using Maven...'
-       
                 }
             }
         }
@@ -14,7 +13,24 @@ pipeline {
                 script {
                     echo 'Running unit tests using JUnit...'
                     echo 'Running integration tests using TestNG...'
-      
+                }
+            }
+            post {
+                success {
+                    emailext(
+                        subject: 'Unit and Integration Tests Success',
+                        body: 'Unit and integration tests passed successfully.',
+                        to: 'yuvindeakin@gmail.com',
+                        attachLog: true
+                    )
+                }
+                failure {
+                    emailext(
+                        subject: 'Unit and Integration Tests Failure',
+                        body: 'Unit or integration tests failed.',
+                        to: 'yuvindeakin@gmail.com',
+                        attachLog: true
+                    )
                 }
             }
         }
@@ -22,7 +38,6 @@ pipeline {
             steps {
                 script {
                     echo 'Analyzing code with SonarQube...'
-          
                 }
             }
         }
@@ -30,7 +45,24 @@ pipeline {
             steps {
                 script {
                     echo 'Performing security scan with OWASP ZAP...'
-        
+                }
+            }
+            post {
+                success {
+                    emailext(
+                        subject: 'Security Scan Success',
+                        body: 'Security scan completed successfully.',
+                        to: 'yuvindeakin@gmail.com',
+                        attachLog: true
+                    )
+                }
+                failure {
+                    emailext(
+                        subject: 'Security Scan Failure',
+                        body: 'Security scan failed.',
+                        to: 'yuvindeakin@gmail.com',
+                        attachLog: true
+                    )
                 }
             }
         }
@@ -38,7 +70,6 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying application to AWS EC2 staging server...'
-               
                 }
             }
         }
@@ -46,7 +77,6 @@ pipeline {
             steps {
                 script {
                     echo 'Running integration tests on staging environment...'
-                
                 }
             }
         }
@@ -54,7 +84,6 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying application to AWS EC2 production server...'
-
                 }
             }
         }
